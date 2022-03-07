@@ -25,6 +25,7 @@ and raw_expression =
 and constant =
   | ConstBool of bool (** Boolean constant [true] or [false]. *)
   | ConstInt of int32 (** Integer constant [[-2^31, 2^31 - 1]]. *)
+  | ConstString of string (** String constant []. *)
 
 and binop =
   | OpAdd (** Binary operator [+]. *)
@@ -32,6 +33,8 @@ and binop =
   | OpMul (** Binary operator [*]. *)
   | OpLt  (** Binary operator [<]. *)
   | OpAnd (** Binary operator [&&]. *)
+  | OpEq (** Binary operator [==]. *)
+
 
 and unop = UOpNot (** Unary operator [!]. *)
 
@@ -46,6 +49,7 @@ and instruction =
 and typ =
   | TypInt (** Type [int]. *)
   | TypBool (** Type [bool]. *)
+  | TypString (** Type [String]. *)
   | TypIntArray (** Type [int[]]. *)
   | Typ of identifier (** A class type. *)
 

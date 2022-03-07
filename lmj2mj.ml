@@ -25,6 +25,7 @@ and translate_instruction = function
 let translate_typ = function
 | LMJ.TypInt -> MJ.TypInt
 | LMJ.TypBool -> MJ.TypBool
+| LMJ.TypString -> MJ.TypString
 | LMJ.TypIntArray -> MJ.TypIntArray
 | LMJ.Typ id -> MJ.Typ (Location.content id)
 

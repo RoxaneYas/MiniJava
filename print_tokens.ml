@@ -1,5 +1,6 @@
 open Parser
 open Printf
+open Lexing
 
 (** UTF8 sequences for different symbols. *)
 let lquote = "\xe2\x80\x98"
@@ -90,6 +91,10 @@ let print_token show_loc out = function
      fprintf out "WHILE"
   | EOF ->
      fprintf out "EOF"
+  | EQ ->
+     fprintf out "EQ"
+  | FOR ->
+     fprintf out "FOR"
 
 let print out lexbuf show_loc =
   let token = ref (Lexer.get_token lexbuf) in

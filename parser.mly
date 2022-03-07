@@ -16,11 +16,17 @@
 %token SYSO
 %token IF ELSE WHILE
 %token EOF
+%token EQ
+%token FOR
 
+%nonassoc NOELSE
+%nonassoc ELSE
 %left AND
+%left EQ
 %nonassoc LT
 %left PLUS MINUS
 %left TIMES
+
 %nonassoc NOT
 %nonassoc DOT LBRACKET
 
@@ -147,6 +153,7 @@ raw_expression:
 | TIMES { OpMul }
 | LT    { OpLt }
 | AND   { OpAnd }
+| EQ    { OpEq }
 
 instruction:
 | b = block
@@ -164,8 +171,14 @@ instruction:
 | IF LPAREN c = expression RPAREN i1 = instruction ELSE i2 = instruction
    { IIf (c, i1, i2) }
 
+| IF LPAREN c = expression RPAREN i1 = instruction %prec NOELSE
+   { IIf (c, i1, IBlock []) } 
+
 | WHILE LPAREN c = expression RPAREN i = instruction
    { IWhile (c, i) }
+
+| FOR LPAREN id1 = IDENT ASSIGN e1 = expression SEMICOLON c = expression SEMICOLON id2 = IDENT ASSIGN e2 = expression RPAREN i = instruction
+   { IBlock [ ISetVar (id1, e1) ; IWhile (c, IBlock [i;ISetVar (id2, e2)])]}
 
 block:
 | LBRACE is = list(instruction) RBRACE
@@ -176,6 +189,8 @@ typ:
    { TypInt }
 | BOOLEAN
    { TypBool }
+| STRING
+   { TypString }
 | INTEGER LBRACKET RBRACKET
    { TypIntArray }
 | id = IDENT

@@ -18,6 +18,7 @@ type expression =
 and constant = LMJ.constant =
   | ConstBool of bool
   | ConstInt of int32
+| ConstString of string
 
 and binop = LMJ.binop =
   | OpAdd
@@ -25,6 +26,7 @@ and binop = LMJ.binop =
   | OpMul
   | OpLt
   | OpAnd
+  | OpEq
 
 and unop = LMJ.unop = UOpNot
 
@@ -39,6 +41,7 @@ and instruction =
 and typ =
   | TypInt
   | TypBool
+  | TypString
   | TypIntArray
   | Typ of identifier
 

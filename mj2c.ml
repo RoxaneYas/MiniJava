@@ -132,10 +132,7 @@ module ClassInfo : ClassInfoType = struct
     let attribute_info =
       (** If a parent class and a child class have the same attribute name, the attribute
             of the child class is before the attribute of the parent class in the list. *)
-      let update class_name index typ = function
-        | None -> Some [class_name, index, typ]
-        | Some l -> Some ((class_name, index, typ) :: l)
-      in
+     
       (** The [index] is used to sort the attributes in the C structure. The attributes of a child
             must come after the attributes of the parent. *)
       let index = ref 0 in
@@ -144,7 +141,14 @@ module ClassInfo : ClassInfoType = struct
           let res =
             List.fold_left
               (fun acc (attribute_name, t) ->
-                SM.update attribute_name (update class_name !index t) acc
+		let v =
+		  try
+		  Some (SM.find attribute_name acc)
+		  with Not_found -> None
+		in 
+		match v with 
+		 | None -> SM.add attribute_name [class_name, !index, t] acc
+        	 | Some l -> SM.add attribute_name ((class_name, !index, t) :: l) acc       
               )
               acc
               clas.attributes
@@ -204,9 +208,8 @@ module ClassInfo : ClassInfoType = struct
       for the method [m] in [class_info]. If the variable doesn't exist, raises [Not_found]. *)
   let find_variable_type m v class_info =
     let _, _, metho = SM.find m class_info.method_info in
-    match List.assoc_opt v metho.formals with
-    | Some t -> t
-    | None -> List.assoc v metho.locals
+    try List.assoc v metho.formals with
+    | Not_found -> List.assoc v metho.locals
 
   let is_attribute m v class_info =
     try
@@ -307,6 +310,7 @@ let constant2c
   | ConstBool true  -> fprintf out "1"
   | ConstBool false -> fprintf out "0"
   | ConstInt i      -> fprintf out "%ld" i
+| ConstString s      -> fprintf out "%s" s
 
 (** [binop2c out op] transpiles the binary operator [op] to C on the output channel [out]. *)
 let binop2c
@@ -319,6 +323,7 @@ let binop2c
   | OpMul -> fprintf out "*"
   | OpLt  -> fprintf out "<"
   | OpAnd -> fprintf out "&&"
+  |OpEq -> fprintf out "=="
 
 (** [type2c out typ] transpiles the type [typ] to C on the output channel [out]. *)
 let type2c
@@ -328,6 +333,7 @@ let type2c
   match typ with
   | TypInt -> fprintf out "int"
   | TypBool -> fprintf out "int"
+  | TypString -> fprintf out "String"
   | TypIntArray -> fprintf out "struct %s*" !struct_array_name
   | Typ t -> fprintf out "struct %s*" t
 

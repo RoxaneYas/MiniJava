@@ -12,6 +12,8 @@ let constant out = function
      fprintf out "false"
   | ConstInt i ->
      fprintf out "%ld" i
+  | ConstString s ->
+     fprintf out "%s" s
 
 (** [binop out op] prints the binary operator [op] on the output channel [out]. *)
 let binop out = function
@@ -25,6 +27,8 @@ let binop out = function
      fprintf out "<"
   | OpAnd ->
      fprintf out "&&"
+  | OpEq ->
+     fprintf out "=="
 
 (** [expr out e], [expr0 out e], ..., [expr6 out e] print the expression [e]
     on the output channel [out]. [expr] is a synonym for [expr6].
@@ -103,7 +107,7 @@ and expr5 out = function
      expr4 out e
 
 and expr6 out = function
-  | EBinOp ((OpLt | OpAnd) as op, e1, e2) ->
+  | EBinOp ((OpLt | OpAnd | OpEq) as op, e1, e2) ->
      fprintf out "%a %a %a"
        expr6 e1
        binop op
@@ -149,6 +153,8 @@ let typ out = function
      fprintf out "int"
   | TypBool ->
      fprintf out "boolean"
+  | TypString ->
+     fprintf out "String"
   | TypIntArray ->
      fprintf out "int[]"
   | Typ id ->
