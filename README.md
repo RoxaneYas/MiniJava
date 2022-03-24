@@ -81,3 +81,4 @@ to go back to the version with a garbage collector do the following.
 git checkout master
 make
 ```
+
