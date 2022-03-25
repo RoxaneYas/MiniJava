@@ -178,6 +178,7 @@ and typecheck_expression (cenv : class_env) (venv : variable_env) (vinit : S.t)
       let expected, returned =
         match op with
         | OpAdd
+        | OpAddAdd
         | OpSub
         | OpMul -> TypInt, TypInt
         | OpLt  -> TypInt, TypBool
@@ -210,6 +211,12 @@ and typecheck_expression (cenv : class_env) (venv : variable_env) (vinit : S.t)
   | EObjectAlloc id ->
       clookup id cenv |> ignore;
       mke (TMJ.EObjectAlloc (Location.content id)) (Typ id)
+
+  | EInc id ->
+      let t= vlookup id venv in
+      let w = Location.content id in
+      if t = TypInt then mke (TMJ.EInc w) t else error e
+      
 
 (** [typecheck_instruction cenv venv vinit instanceof inst] checks, using the environments [cenv] and
     [venv], the set of initialized variables [vinit] and the [instanceof] function,

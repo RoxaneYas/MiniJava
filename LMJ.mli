@@ -21,6 +21,8 @@ and raw_expression =
   | EArrayLength of expression (** [EArrayLength e] represents the expression [e.length]. *)
   | EThis (** [EThis] represents the expression [this]. *)
   | EObjectAlloc of identifier (** [EObjectAlloc id] represents the expression [new id()]. *)
+  | EExpr of expression
+  | EInc of identifier
 
 and constant =
   | ConstBool of bool (** Boolean constant [true] or [false]. *)
@@ -29,6 +31,7 @@ and constant =
 
 and binop =
   | OpAdd (** Binary operator [+]. *)
+  | OpAddAdd (** Binary operator [++]. *)
   | OpSub (** Binary operator [-]. *)
   | OpMul (** Binary operator [*]. *)
   | OpLt  (** Binary operator [<]. *)
@@ -45,6 +48,7 @@ and instruction =
   | ISyso of expression (** [ISyso e] represents the instruction [System.out.println(e);]. *)
   | ISetVar of identifier * expression (** [ISetVar (id, e)] represents the instruction [id = e;]. *)
   | IArraySet of identifier * expression * expression (** [IArraySet (id, e1, e2)] represents the instruction [id[e1] = e2;]. *)
+  | IExpr of expression
 
 and typ =
   | TypInt (** Type [int]. *)

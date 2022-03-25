@@ -19,6 +19,8 @@ let constant out = function
 let binop out = function
   | OpAdd ->
      fprintf out "+"
+  | OpAddAdd ->
+      fprintf out "++"
   | OpSub ->
      fprintf out "-"
   | OpMul ->

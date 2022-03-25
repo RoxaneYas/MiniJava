@@ -301,6 +301,7 @@ let binop2c
     : unit =
   match op with
   | OpAdd -> fprintf out "+"
+  | OpAddAdd -> fprintf out "++"
   | OpSub -> fprintf out "-"
   | OpMul -> fprintf out "*"
   | OpLt  -> fprintf out "<"
@@ -427,6 +428,10 @@ let expr2c
     | EUnOp (UOpNot, e) ->
        fprintf out "!(%a)"
          expr2c e
+
+    | EInc (e) ->
+      fprintf out "(%a)++"
+        expr2c e
 
     | EBinOp (op, e1, e2) ->
        fprintf out "(%a %a %a)"

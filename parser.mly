@@ -9,7 +9,7 @@
 %token INTEGER BOOLEAN
 %token <string Location.t> IDENT
 %token CLASS PUBLIC STATIC VOID MAIN STRING EXTENDS RETURN
-%token PLUS MINUS TIMES NOT LT AND
+%token PLUS MINUS PLUSPLUS TIMES NOT LT AND
 %token COMMA SEMICOLON
 %token ASSIGN
 %token LPAREN RPAREN LBRACKET RBRACKET LBRACE RBRACE
@@ -107,6 +107,11 @@ declarations_and_statements:
    }
 | s = list(instruction)
    { ([], s) }
+| t = typ id = IDENT ASSIGN id2 = expression SEMICOLON r = declarations_and_statements
+   {
+      let d, s = r in
+      ((id, t):: d, (ISetVar(id,id2))::s)
+   }
 
 expression:
 |  e = raw_expression
@@ -151,8 +156,12 @@ raw_expression:
 | NOT e = expression
    { EUnOp (UOpNot, e) }
 
+| x = expression PLUSPLUS
+   {EInc x}
+
 %inline binop:
 | PLUS  { OpAdd }
+| PLUSPLUS  { OpAddAdd }
 | MINUS { OpSub }
 | TIMES { OpMul }
 | LT    { OpLt }
@@ -183,6 +192,9 @@ instruction:
 
 | FOR LPAREN id1 = IDENT ASSIGN e1 = expression SEMICOLON c = expression SEMICOLON id2 = IDENT ASSIGN e2 = expression RPAREN i = instruction
    { IBlock [ ISetVar (id1, e1) ; IWhile (c, IBlock [i;ISetVar (id2, e2)])]}
+
+| x = expression SEMICOLON
+   { IExpr x }
 
 block:
 | LBRACE is = list(instruction) RBRACE
