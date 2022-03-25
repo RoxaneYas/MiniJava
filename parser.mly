@@ -5,6 +5,7 @@
 
 %token <int32> INT_CONST
 %token <bool> BOOL_CONST
+%token <string> STRING_CONST
 %token INTEGER BOOLEAN
 %token <string Location.t> IDENT
 %token CLASS PUBLIC STATIC VOID MAIN STRING EXTENDS RETURN
@@ -116,6 +117,9 @@ expression:
 raw_expression:
 | i = INT_CONST
    { EConst (ConstInt i) }
+
+| s = STRING_CONST
+   { EConst (ConstString s) }
 
 | b = BOOL_CONST
    { EConst (ConstBool b) }

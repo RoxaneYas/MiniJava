@@ -262,8 +262,9 @@ let rec typecheck_instruction (cenv : class_env) (venv : variable_env) (vinit : 
       (TMJ.IWhile (cond', ibody'), vinit)
 
   | ISyso e ->
-     let e' = typecheck_expression_expecting cenv venv vinit instanceof TypInt e in
-     (TMJ.ISyso e', vinit)
+     let e' = typecheck_expression cenv venv vinit instanceof e in match e'.TMJ.typ with
+     | TMJ.TypInt | TMJ.TypString -> (TMJ.ISyso e', vinit)
+     | _ -> error e "Error type"
 
 (** [occurences x bindings] returns the elements in [bindings] that have [x] has identifier. *)
 let occurrences (x : string) (bindings : (identifier * 'a) list) : identifier list =
@@ -322,7 +323,7 @@ let typecheck_method (cenv : class_env) (venv : variable_env)
   in
   let body', vinit =
     match typecheck_instruction cenv venv vinit instanceof (IBlock m.body) with 
-    | IBlock body', vinit -> body', vinit 
+    | TMJ.IBlock body', vinit -> body', vinit 
     | _ -> assert false
   in
   let return' = typecheck_expression_expecting cenv venv vinit instanceof m.result m.return in

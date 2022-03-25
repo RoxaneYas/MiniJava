@@ -12,6 +12,8 @@
     let pos = lexbuf.lex_curr_p in
     lexbuf.lex_curr_p <-
       { pos with pos_lnum = pos.pos_lnum + 1; pos_bol = pos.pos_cnum }
+
+  let buffer = Buffer.create 10
 }
 
 let digit = ['0'-'9']
@@ -63,6 +65,7 @@ rule get_token = parse
   | "while" { WHILE }
   | "=="     { EQ }
   | "for"    { FOR }
+  | '"' {Buffer.clear buffer;string_lit lexbuf}
   | integer as i
       {
         try
@@ -82,3 +85,9 @@ and comment = parse
   | '\n'    { newline lexbuf; comment lexbuf }
   | _       { comment lexbuf }
   | eof     { raise (Error ("Unterminated comment")) }
+
+  and string_lit = parse
+  |'"'      { STRING_CONST(Buffer.contents buffer) }
+  |'\n'     { raise (Error ("No new line authorise")) }
+  | eof     { raise (Error ("Unterminated comment")) }
+  |_ as c   { Buffer.add_char buffer c;string_lit lexbuf }
