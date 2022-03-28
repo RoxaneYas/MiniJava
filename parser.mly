@@ -9,7 +9,7 @@
 %token INTEGER BOOLEAN
 %token <string Location.t> IDENT
 %token CLASS PUBLIC STATIC VOID MAIN STRING EXTENDS RETURN
-%token PLUS MINUS PLUSPLUS TIMES NOT LT AND
+%token PLUS MINUS PLUSPLUS MOINSMOINS TIMES NOT LT AND
 %token COMMA SEMICOLON
 %token ASSIGN
 %token LPAREN RPAREN LBRACKET RBRACKET LBRACE RBRACE
@@ -160,6 +160,9 @@ raw_expression:
 | x = IDENT PLUSPLUS
    {EInc x}
 
+| x = IDENT MOINSMOINS
+   {EDec x}
+
 %inline binop:
 | PLUS  { OpAdd }
 | MINUS { OpSub }
@@ -198,6 +201,9 @@ instruction:
 
 | x = expression SEMICOLON
    { IExpr x }
+
+| x = expression SEMICOLON
+   { IExprM x }
 
 block:
 | LBRACE is = list(instruction) RBRACE

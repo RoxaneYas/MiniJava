@@ -431,6 +431,10 @@ let expr2c
     | EInc id ->
       fprintf out "(%s)++"
         id
+        
+    | EDec id ->
+      fprintf out "(%s)--"
+        id
 
     | EBinOp (op, e1, e2) ->
        fprintf out "(%a %a %a)"
@@ -492,6 +496,10 @@ let instr2c
     | IExpr e -> 
       fprintf out "(%a);"
          (expr2c method_name class_info) e
+
+    | IExprM e -> 
+      fprintf out "(%a);"
+        (expr2c method_name class_info) e
   in
   instr2c out ins
 

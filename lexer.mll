@@ -30,6 +30,7 @@ rule get_token = parse
   | '+'       { PLUS }
   | "++"      {PLUSPLUS}
   | '-'       { MINUS }
+  | "--"      {MOINSMOINS}
   | '*'       { TIMES }
   | "&&"      { AND }
   | "<"       { LT }

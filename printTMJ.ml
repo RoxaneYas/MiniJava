@@ -152,6 +152,9 @@ let rec instr out = function
   | IExpr e ->
      fprintf out "(%a)++;"
        expr e
+  | IExprM e ->
+   fprintf out "(%a)--;"
+      expr e
 
 (** [typ out t] prints the type [t] on the output channel [out]. *)
 let typ out = function

@@ -22,6 +22,7 @@ and raw_expression =
   | EThis (** [EThis] represents the expression [this]. *)
   | EObjectAlloc of identifier (** [EObjectAlloc id] represents the expression [new id()]. *)
   | EInc of identifier
+  | EDec of identifier
 
 and constant =
   | ConstBool of bool (** Boolean constant [true] or [false]. *)
@@ -47,6 +48,7 @@ and instruction =
   | ISetVar of identifier * expression (** [ISetVar (id, e)] represents the instruction [id = e;]. *)
   | IArraySet of identifier * expression * expression (** [IArraySet (id, e1, e2)] represents the instruction [id[e1] = e2;]. *)
   | IExpr of expression
+  | IExprM of expression
 
 and typ =
   | TypInt (** Type [int]. *)
