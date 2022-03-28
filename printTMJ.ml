@@ -19,8 +19,6 @@ let constant out = function
 let binop out = function
   | OpAdd ->
      fprintf out "+"
-  | OpAddAdd ->
-      fprintf out "++"
   | OpSub ->
      fprintf out "-"
   | OpMul ->
@@ -42,6 +40,9 @@ let binop out = function
     this case, we have an expression of lower priority than the current context and so we
     have to put parenthesis around it and then call [expr] again. *)
 let rec expr0 out e = match e.raw_expression with
+  | EInc id ->
+     fprintf out "(%s)++"
+      id
   | EConst c ->
      fprintf out "%a" constant c
   | EGetVar x ->
@@ -147,6 +148,9 @@ let rec instr out = function
        nl
   | ISyso e ->
      fprintf out "System.out.println(%a);"
+       expr e
+  | IExpr e ->
+     fprintf out "(%a)++;"
        expr e
 
 (** [typ out t] prints the type [t] on the output channel [out]. *)

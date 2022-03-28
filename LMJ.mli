@@ -21,7 +21,6 @@ and raw_expression =
   | EArrayLength of expression (** [EArrayLength e] represents the expression [e.length]. *)
   | EThis (** [EThis] represents the expression [this]. *)
   | EObjectAlloc of identifier (** [EObjectAlloc id] represents the expression [new id()]. *)
-  | EExpr of expression
   | EInc of identifier
 
 and constant =
@@ -31,7 +30,6 @@ and constant =
 
 and binop =
   | OpAdd (** Binary operator [+]. *)
-  | OpAddAdd (** Binary operator [++]. *)
   | OpSub (** Binary operator [-]. *)
   | OpMul (** Binary operator [*]. *)
   | OpLt  (** Binary operator [<]. *)

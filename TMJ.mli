@@ -16,6 +16,7 @@ and raw_expression =
   | EArrayLength of expression
   | EThis
   | EObjectAlloc of identifier
+  | EInc of identifier
 
 and constant = LMJ.constant =
   | ConstBool of bool
@@ -39,6 +40,7 @@ and instruction =
   | ISyso of expression
   | ISetVar of identifier * typ * expression
   | IArraySet of identifier * expression * expression
+  | IExpr of expression
 
 and typ =
   | TypInt

@@ -178,7 +178,6 @@ and typecheck_expression (cenv : class_env) (venv : variable_env) (vinit : S.t)
       let expected, returned =
         match op with
         | OpAdd
-        | OpAddAdd
         | OpSub
         | OpMul -> TypInt, TypInt
         | OpLt  -> TypInt, TypBool
@@ -216,6 +215,7 @@ and typecheck_expression (cenv : class_env) (venv : variable_env) (vinit : S.t)
       let t= vlookup id venv in
       let w = Location.content id in
       if t = TypInt then mke (TMJ.EInc w) t else error e
+      (sprintf "Type mismatch, expected %s, got %s" (type_to_string TypInt) (type_to_string t))
       
 
 (** [typecheck_instruction cenv venv vinit instanceof inst] checks, using the environments [cenv] and
@@ -268,10 +268,16 @@ let rec typecheck_instruction (cenv : class_env) (venv : variable_env) (vinit : 
       let ibody', vinit = typecheck_instruction cenv venv vinit instanceof ibody in
       (TMJ.IWhile (cond', ibody'), vinit)
 
-  | ISyso e ->
+  | ISyso e -> begin
      let e' = typecheck_expression cenv venv vinit instanceof e in match e'.TMJ.typ with
      | TMJ.TypInt | TMJ.TypString -> (TMJ.ISyso e', vinit)
      | _ -> error e "Error type"
+  end
+
+  | IExpr e ->
+    let e' = typecheck_expression cenv venv vinit instanceof e in 
+     (TMJ.IExpr e', vinit)
+
 
 (** [occurences x bindings] returns the elements in [bindings] that have [x] has identifier. *)
 let occurrences (x : string) (bindings : (identifier * 'a) list) : identifier list =

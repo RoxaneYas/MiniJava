@@ -20,6 +20,7 @@
 %token EQ
 %token FOR
 
+
 %nonassoc NOELSE
 %nonassoc ELSE
 %left AND
@@ -27,7 +28,7 @@
 %nonassoc LT
 %left PLUS MINUS
 %left TIMES
-
+%nonassoc IDENT
 %nonassoc NOT
 %nonassoc DOT LBRACKET
 
@@ -156,12 +157,11 @@ raw_expression:
 | NOT e = expression
    { EUnOp (UOpNot, e) }
 
-| x = expression PLUSPLUS
+| x = IDENT PLUSPLUS
    {EInc x}
 
 %inline binop:
 | PLUS  { OpAdd }
-| PLUSPLUS  { OpAddAdd }
 | MINUS { OpSub }
 | TIMES { OpMul }
 | LT    { OpLt }
@@ -192,6 +192,9 @@ instruction:
 
 | FOR LPAREN id1 = IDENT ASSIGN e1 = expression SEMICOLON c = expression SEMICOLON id2 = IDENT ASSIGN e2 = expression RPAREN i = instruction
    { IBlock [ ISetVar (id1, e1) ; IWhile (c, IBlock [i;ISetVar (id2, e2)])]}
+
+| FOR LPAREN id1 = IDENT ASSIGN e1 = expression SEMICOLON c = expression SEMICOLON e2 = expression RPAREN i = instruction
+   { IBlock [ ISetVar (id1, e1) ; IWhile (c, IBlock [i;IExpr (e2)])]}
 
 | x = expression SEMICOLON
    { IExpr x }

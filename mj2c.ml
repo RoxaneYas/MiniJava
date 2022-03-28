@@ -301,7 +301,6 @@ let binop2c
     : unit =
   match op with
   | OpAdd -> fprintf out "+"
-  | OpAddAdd -> fprintf out "++"
   | OpSub -> fprintf out "-"
   | OpMul -> fprintf out "*"
   | OpLt  -> fprintf out "<"
@@ -429,9 +428,9 @@ let expr2c
        fprintf out "!(%a)"
          expr2c e
 
-    | EInc (e) ->
-      fprintf out "(%a)++"
-        expr2c e
+    | EInc id ->
+      fprintf out "(%s)++"
+        id
 
     | EBinOp (op, e1, e2) ->
        fprintf out "(%a %a %a)"
@@ -482,11 +481,17 @@ let instr2c
          (indent indentation (sep_list nl instr2c)) is
          nl
 
-    | ISyso e -> match e.typ with
+    | ISyso e -> begin
+      match e.typ with
       | TypInt -> fprintf out "printf(\"%%d\\n\", %a);"
          (expr2c method_name class_info) e
       | TypString -> fprintf out "printf(\"%%s\\n\", %a);"
       (expr2c method_name class_info) e
+    end
+
+    | IExpr e -> 
+      fprintf out "(%a);"
+         (expr2c method_name class_info) e
   in
   instr2c out ins
 
